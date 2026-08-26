@@ -5,9 +5,21 @@ import { Link } from "react-router-dom";
 export default function CatalogComponent() {
   const [games, setGames] = useState([]);
   useEffect(() => {
-    getAll().then(result => {
-      setGames(result)
-    })
+    const controller = new AbortController()
+    getAll(controller.signal)
+      .then(result => {
+        setGames(result)
+      })
+      .catch(error => {
+        if (error.name !== 'AbortError') {
+          console.error(error);
+
+        }
+      });
+    return () => {
+      controller.abort()
+    }
+
   }, [])
   return (
     <section id="catalog-page">
@@ -30,7 +42,7 @@ export default function CatalogComponent() {
 
       </div>
       {games.length === 0 && (
-        <h3 className ="no-articles">No Added Games Yet</h3>
+        <h3 className="no-articles">No Added Games Yet</h3>
       )}
 
     </section>
