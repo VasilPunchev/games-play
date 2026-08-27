@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { getAll } from "../../services/gameService";
 import { Link } from "react-router-dom";
 
+
 export default function CatalogComponent() {
   const [games, setGames] = useState([]);
   useEffect(() => {
