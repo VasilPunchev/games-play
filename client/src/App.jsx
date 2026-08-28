@@ -21,11 +21,13 @@ export default function App() {
        <Routes>
        <Route path='/' element = {<HomeComponent/>} />
        <Route path='/catalog' element = {<CatalogComponent/>} />
-       <Route path='/details/:gameId' element = {<DetailsComponent/>} />
        <Route path='/login' element = {<LoginComponent/>} />
        <Route path='/register' element = {<RegisterComponent/>} />
        <Route path='/create' element = {<CreateGameComponent/>} />
-       <Route path='/edit/:gameId' element = {<EditComponent/>}  />     
+        <Route path='/games'>
+          <Route path=':gameId' element= {<DetailsComponent />} />
+          <Route path=':gameId/edit' element = {<EditComponent />} />
+        </Route>
        
        </Routes>
       

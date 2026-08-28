@@ -33,7 +33,7 @@ export default function CatalogComponent() {
             <div className="details-overlay">
               <p className="name">{game.title}</p>
               <p className="genre">{game.genre}</p>
-              <Link to={`/details/${game._id}`}
+              <Link to={`/games/${game._id}`}
                 className="details-button">
                 Details
               </Link>

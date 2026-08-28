@@ -76,7 +76,7 @@ export default function DetailsComponent() {
         </div>
         {/* Edit/Delete buttons ( Only for creator of this game )  */}
         <div className="buttons">
-          <Link to={`/edit/${gameId}`} className="button">
+          <Link to={`/games/${gameId}/edit`} className="button">
             Edit
           </Link>
           <button className="button" onClick={deleteHandler}>

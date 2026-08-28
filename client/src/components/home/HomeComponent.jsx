@@ -35,14 +35,14 @@ export default function HomeComponent() {
           <div id="latest-wrap">
             {games.map(game => (
 
-              <div className="game" key={game.id}>
+              <div className="game" key={game._id}>
                 <img src={game.imageUrl} alt={game.title} />
 
                 <div className="details-overlay">
                   <p className="name">{game.title}</p>
                   <p className="genre">{game.genre}</p>
                   <Link
-                    to={`/details/${game._id}`}
+                    to={`/games/${game._id}`}
                     className="details-button"
                   >
                     Details
