@@ -17,3 +17,14 @@ export async function getOne(gameId, signal) {
     const result = await response.json()
     return result;
 }
+export async function deleteGame(gameId, token) {
+    const response = await fetch(`${baseUrl}/${gameId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-Authorization' : token
+        }
+    })
+    const result = await response.json()
+    return result
+    
+}
