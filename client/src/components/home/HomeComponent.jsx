@@ -34,26 +34,28 @@ export default function HomeComponent() {
           <h1>Latest Games</h1>
           <div id="latest-wrap">
             {games.map(game => (
-              
-                <div className="game" key={game._id}>
-                  <img src={game.imageUrl} alt={game.title} />
 
-                  <div className="details-overlay">
-                    <p className="name">{game.title}</p>
-                    <p className="genre">{game.genre}</p>
-                    <Link to = {`/details/${game._id}`} 
-                    className="details-button" 
-                    >
-                    Details 
-                    </Link>
-                  </div>
-                </div>  
+              <div className="game" key={game.id}>
+                <img src={game.imageUrl} alt={game.title} />
+
+                <div className="details-overlay">
+                  <p className="name">{game.title}</p>
+                  <p className="genre">{game.genre}</p>
+                  <Link
+                    to={`/details/${game._id}`}
+                    className="details-button"
+                  >
+                    Details
+                  </Link>
+                </div>
+              </div>
 
             ))}
-          {games.length === 0 && (<p className="no-articles">No games yet</p>) }
+            {games.length === 0 && (<p className="no-articles">No games yet</p>)}
           </div>
         </div>
       </section>
     </>
 
-)}
+  )
+}
