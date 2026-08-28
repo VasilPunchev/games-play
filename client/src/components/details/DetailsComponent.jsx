@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import { getOne } from "../../services/gameService"
-import { Link } from "react-router-dom"
+import { useNavigate, useParams, Link } from "react-router-dom"
+import { getOne, deleteGame } from "../../services/gameService"
+
 
 export default function DetailsComponent() {
   const [game, setGame] = useState({})
@@ -26,6 +26,22 @@ export default function DetailsComponent() {
       controller.abort()
     }
   }, [gameId])
+
+  const navigate = useNavigate()
+  
+  async function deleteHandler() {
+    const token = localStorage.getItem('accessToken')
+    if (!token) {
+      console.error('No access token')
+      return
+    }
+    try {
+      await deleteGame(gameId, token)
+      navigate('/')
+    } catch (err) {
+      console.error(err)
+    }
+  }
   return (
     <section id="game-details">
       <h1>Game Details</h1>
@@ -63,7 +79,7 @@ export default function DetailsComponent() {
           <Link to={`/edit/${gameId}`} className="button">
             Edit
           </Link>
-          <button className="button">
+          <button className="button" onClick={deleteHandler}>
             Delete
           </button>
         </div>
