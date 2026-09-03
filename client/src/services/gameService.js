@@ -47,3 +47,21 @@ export async function addGame(gameData, token) {
 
 
 }
+
+export async function editGame(gameId, gameData, token) {
+    const response = await fetch(`${baseUrl}/${gameId}`, {
+    method:'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization' : token
+    },
+    body:JSON.stringify(gameData)
+
+    })
+    const result = await response.json();
+    if (!response.ok) {
+        throw new Error(result.message)
+    }
+   return result
+    
+}

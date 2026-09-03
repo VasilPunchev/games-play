@@ -38,7 +38,7 @@ async function submitHandler(e) {
   }
   try {
     await addGame(gameData, token)
-    navigate('/catalog')
+    navigate('/')
   } catch (err) {
     window.alert(err.message)
   }
