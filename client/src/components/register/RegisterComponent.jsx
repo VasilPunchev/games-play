@@ -11,9 +11,13 @@ export default function RegisterComponent() {
 
   async function submitHandler(e) {
    e.preventDefault()
+   if (!password || !email || !confirmPassword) {
+    window.alert('All fields are required')
+    return;
+   }
 
   if (password !== confirmPassword) {
-    console.error("Passwords do not match")
+    window.alert("Passwords do not match")
     return;
   }  
   
@@ -24,7 +28,7 @@ export default function RegisterComponent() {
     navigate('/')
     
   } catch (err) {
-    console.error(err.message)
+    window.alert(err.message)
   }
   }
 
