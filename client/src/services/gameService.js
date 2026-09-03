@@ -29,7 +29,7 @@ export async function deleteGame(gameId, token) {
 }
 
 export async function addGame(gameData, token) {
-    const response = await fetch({baseUrl}, {
+    const response = await fetch(baseUrl, {
         method: 'POST',
          headers: {
             'Content-Type':'application/json' ,
@@ -37,12 +37,13 @@ export async function addGame(gameData, token) {
         },  
         body: JSON.stringify(gameData)
     })
-    const result = await response.json()
+    
 
     if (!response.ok) {
+        const result = await response.json()
         throw new Error(result.message)
     }
-    return result;
+    return response;
 
 
 }

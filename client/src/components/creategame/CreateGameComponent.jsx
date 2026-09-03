@@ -24,12 +24,16 @@ async function submitHandler(e) {
     return
   }
   const token = localStorage.getItem('accessToken');
+  if (!token) {
+    window.alert('You must be logged in')
+    return
+  }
   const gameData = {
      title:gameName,
      genre,
      players:Number(activePlayers),
      date:releaseDate,
-     imgUrl,
+     imageUrl:imgUrl,
      summary
   }
   try {
@@ -108,7 +112,6 @@ async function submitHandler(e) {
           onChange={(e)=> setSummary(e.target.value)}
           rows={5}
           placeholder="Write a brief summary..."
-          defaultValue={""}
         />
       </div>
       <input className="btn submit" type="submit" value="ADD GAME" />
