@@ -26,5 +26,23 @@ export async function deleteGame(gameId, token) {
     })
     const result = await response.json()
     return result
-    
+}
+
+export async function addGame(gameData, token) {
+    const response = await fetch({baseUrl}, {
+        method: 'POST',
+         headers: {
+            'Content-Type':'application/json' ,
+            'X-Authorization' : token
+        },  
+        body: JSON.stringify(gameData)
+    })
+    const result = await response.json()
+
+    if (!response.ok) {
+        throw new Error(result.message)
+    }
+    return result;
+
+
 }
