@@ -32,9 +32,9 @@ export default function DetailsComponent() {
   async function deleteHandler() {
     const token = localStorage.getItem('accessToken')
     if (!token) {
-      console.error('No access token')
-      return
-    }
+    console.error('No access token')
+    return
+     }
     try {
       await deleteGame(gameId, token)
       navigate('/')

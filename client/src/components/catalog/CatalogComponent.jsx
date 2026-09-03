@@ -9,7 +9,7 @@ export default function CatalogComponent() {
     const controller = new AbortController()
     getAll(controller.signal)
       .then(result => {
-        console.log('FIRST GAME:', result[0])
+        
         setGames(result)
       })
       .catch(error => {
