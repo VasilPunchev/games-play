@@ -14,3 +14,22 @@ export async function getComments(gameId, signal) {
         _id: id
     }))
 }
+
+export async function addComment(gameId, comment, token) {
+    const response = await fetch(baseUrl, {
+        method: 'POST' ,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Authorization': token
+        } ,
+        body: JSON.stringify({
+            gameId ,
+            comment
+        })
+    })
+    const result = await response.json()
+    if (!response.ok) {
+        throw new Error(result.message)
+    }
+    return result
+}
