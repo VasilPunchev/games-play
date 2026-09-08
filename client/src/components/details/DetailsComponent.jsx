@@ -63,6 +63,27 @@ export default function DetailsComponent() {
       console.error(err)
     }
   }
+
+  async function submitHandler(e) {
+    e.preventDefault()
+    if (!comment) {
+      window.alert('Comment is required')
+      return
+    }
+    const token = localStorage.getItem('accessToken')
+    if (!token) {
+      window.alert('You must be logged in')
+      return
+    }
+    try {
+      await addComment(gameId, comment, token)
+      setComment('')
+      const updatedComments = await getComments(gameId)
+      setComments(updatedComments)
+    } catch (err) {
+      window.alert(err.message)
+    }
+  }
   return (
     <section id="game-details">
       <h1>Game Details</h1>
@@ -121,8 +142,13 @@ export default function DetailsComponent() {
       {/* Add Comment ( Only for logged-in users, which is not creators of the current game ) */}
       <article className="create-comment">
         <label>Add new comment:</label>
-        <form className="form">
-          <textarea name="comment" placeholder="Comment......" defaultValue={""} />
+        <form className="form" onSubmit={submitHandler}>
+          <textarea 
+          name="comment"
+           placeholder="Comment......" 
+           value={comment}
+           onChange={(e) => setComment(e.target.value) }
+            />
           <input className="btn submit" type="submit" value="Add Comment" />
         </form>
       </article>
