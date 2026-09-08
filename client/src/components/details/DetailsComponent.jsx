@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams, Link } from "react-router-dom"
 import { getOne, deleteGame } from "../../services/gameService"
+import { getComments, addComment } from "../../services/commentService"
 
 
 export default function DetailsComponent() {
@@ -26,6 +27,26 @@ export default function DetailsComponent() {
       controller.abort()
     }
   }, [gameId])
+
+  const [comments, setComments] = useState([])
+  const [comment, setComment] = useState('')
+
+  useEffect(() => {
+    const controller = new AbortController()
+    getComments(gameId, controller.signal)
+    .then(result => {
+      setComments(result)
+    })
+    .catch(err => {
+      if (err.name !== 'AbortError') {
+        console.error(err)
+      }
+    })
+    return () => {
+      controller.abort()
+    }
+
+  },[gameId])
 
   const navigate = useNavigate()
   
@@ -85,21 +106,16 @@ export default function DetailsComponent() {
         </div>
         <div className="details-comments">
           <h2>Comments:</h2>
-          <ul>
-            <li className="comment">
-              <p>
-                Content: A masterpiece of world design, though the boss fights are
-                brutal.
-              </p>
-            </li>
-            <li className="comment">
-              <p>
-                Content: Truly feels like a next-gen evolution of the Souls formula!
-              </p>
-            </li>
-          </ul>
-          {/* Display paragraph: If there are no games in the database */}
-          {/* <p class="no-comment">No comments.</p> */}
+          {comments.length > 0 ? (
+            <ul>
+              {comments.map(comment => ( 
+                <li className="comment" key={comment._id}> 
+                <p>Content: {comment.comment}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (<p className="no-comment">No comments.</p>
+          )}
         </div>
       </div>
       {/* Add Comment ( Only for logged-in users, which is not creators of the current game ) */}
