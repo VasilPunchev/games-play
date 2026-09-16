@@ -1,40 +1,44 @@
-import { useState } from "react"
+import useForm from "../../hooks/useForm";
+import useAuth from "../../hooks/useAuth";
 import { addGame } from "../../services/gameService"
 import { useNavigate } from "react-router-dom";
 
 export default function CreateGameComponent () {
-const [ gameName, setGameName ] = useState('');
-const [ genre, setGenre ] = useState('');
-const [ activePlayers, setActivePlayers ] = useState('');
-const [ releaseDate, setReleaseDate ] = useState('');
-const [ imgUrl, setImgUrl ] = useState('');
-const [ summary, setSummary ] = useState('');
+const {values, register} = useForm({
+  gameName: '',
+  genre: '',
+  activePlayers: '',
+  releaseDate: '',
+  imgUrl: '',
+  summary: ''
+})
+const {user} = useAuth()
 const navigate = useNavigate()
 
 async function submitHandler(e) {
   e.preventDefault();
-  if (!gameName ||
-      !genre ||
-      !activePlayers ||
-      !releaseDate ||
-      !imgUrl ||
-      !summary 
+  if (!values.gameName ||
+      !values.genre ||
+      !values.activePlayers ||
+      !values.releaseDate ||
+      !values.imgUrl ||
+      !values.summary 
     ) {
     window.alert('All fields are required')
     return
   }
-  const token = localStorage.getItem('accessToken');
+  const token = user?.accessToken
   if (!token) {
     window.alert('You must be logged in')
     return
   }
   const gameData = {
-     title:gameName,
-     genre,
-     players:Number(activePlayers),
-     date:releaseDate,
-     imageUrl:imgUrl,
-     summary
+     title:values.gameName,
+     genre:values.genre,
+     players:Number(values.activePlayers),
+     date:values.releaseDate,
+     imageUrl:values.imgUrl,
+     summary:values.summary
   }
   try {
     await addGame(gameData, token)
@@ -54,9 +58,7 @@ async function submitHandler(e) {
         <input
           type="text"
           id="gameName"
-          name="gameName"
-          value={gameName}
-          onChange={(e)=> setGameName(e.target.value)}
+         {...register('gameName')}
           placeholder="Enter game title..."
         />
       </div>
@@ -65,9 +67,7 @@ async function submitHandler(e) {
         <input
           type="text"
           id="genre"
-          name="genre"
-          value={genre}
-          onChange={(e)=> setGenre(e.target.value)}
+         {...register('genre')}
           placeholder="Enter game genre..."
         />
       </div>
@@ -76,20 +76,16 @@ async function submitHandler(e) {
         <input
           type="number"
           id="activePlayers"
-          name="activePlayers"
-          value={activePlayers}
-          onChange={(e)=> setActivePlayers(e.target.value)}
           min={0}
           placeholder={0}
+          {...register('activePlayers')}
         />
       </div>
       <div className="form-group-half">
         <label htmlFor="releaseDate">Release Date:</label>
         <input type="date"
          id="releaseDate" 
-        name="releaseDate"
-        value={releaseDate}
-        onChange={(e)=> setReleaseDate(e.target.value)}
+       {...register('releaseDate')}
          />
       </div>
       <div className="form-group-full">
@@ -97,21 +93,17 @@ async function submitHandler(e) {
         <input
           type="text"
           id="imageUrl"
-          value={imgUrl}
-          onChange={(e)=> setImgUrl(e.target.value)}
-          name="imageUrl"
           placeholder="Enter image URL..."
+          {...register('imgUrl')}
         />
       </div>
       <div className="form-group-full">
         <label htmlFor="summary">Summary:</label>
         <textarea
-          name="summary"
           id="summary"
-          value={summary}
-          onChange={(e)=> setSummary(e.target.value)}
           rows={5}
           placeholder="Write a brief summary..."
+          {...register('summary')}
         />
       </div>
       <input className="btn submit" type="submit" value="ADD GAME" />
