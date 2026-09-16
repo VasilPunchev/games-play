@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from "react-router-dom"
 import { getOne, deleteGame } from "../../services/gameService"
 import { getComments, addComment } from "../../services/commentService"
 import useAuth from "../../hooks/useAuth"
+import useForm from "../../hooks/useForm"
 
 
 export default function DetailsComponent() {
@@ -29,14 +30,14 @@ export default function DetailsComponent() {
     }
   }, [gameId])
 
-  const [comments, setComments] = useState([])
-  const [comment, setComment] = useState('')
-
+const { values, register, setValues } = useForm({
+  comment:''
+})
   useEffect(() => {
     const controller = new AbortController()
     getComments(gameId, controller.signal)
       .then(result => {
-        setComments(result)
+      setValues(result)
       })
       .catch(err => {
         if (err.name !== 'AbortError') {
@@ -69,7 +70,7 @@ export default function DetailsComponent() {
 
   async function submitHandler(e) {
     e.preventDefault()
-    if (!comment) {
+    if (!values.comment) {
       window.alert('Comment is required')
       return
     }
@@ -79,10 +80,10 @@ export default function DetailsComponent() {
       return
     }
     try {
-      await addComment(gameId, comment, token, user.email)
-      setComment('')
+      await addComment(gameId, values.comment, token, user.email)
+      setValues({comment: ''})
       const updatedComments = await getComments(gameId)
-      setComments(updatedComments)
+      setValues(updatedComments)
     } catch (err) {
       window.alert(err.message)
     }
@@ -130,9 +131,9 @@ export default function DetailsComponent() {
 
         <div className="details-comments">
           <h2>Comments:</h2>
-          {comments.length > 0 ? (
+          {values.comments.length > 0 ? (
             <ul>
-              {comments.map(comment => (
+              {values.comments.map(comment => (
                 <li className="comment" key={comment._id}>
                   <p>{comment.email}: {comment.comment}</p>
                 </li>
@@ -146,10 +147,9 @@ export default function DetailsComponent() {
         <label>Add new comment:</label>
         <form className="form" onSubmit={submitHandler}>
           <textarea
-            name="comment"
+           
             placeholder="Comment......"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
+           {...register('comment')}
           />
           <input className="btn submit" type="submit" value="Add Comment" />
         </form>
