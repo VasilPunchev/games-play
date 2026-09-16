@@ -20,9 +20,16 @@ localStorage.setItem('accessToken', userData.accessToken)
 localStorage.setItem('userId', userData._id)
 setUser(userData)
 }
+
+function logoutUser() {
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('userId')
+    setUser(null)
+}
 const contextValue = {
     user,
-    loginUser
+    loginUser,
+    logoutUser
 }
 return ( 
 <AuthContext.Provider value={contextValue}>
