@@ -13,17 +13,21 @@ const { values, register } = useForm({
  const navigate = useNavigate()
  const { loginUser } = useAuth()
 
- async function submitHandler(e) {
+ async function submitHandler(e) {   
     e.preventDefault()
+    
 
     try {
       const result = await login(values.email, values.password)
-        loginUser(result)
+      
+      loginUser(result)
+        
         navigate('/')
         
     } catch (err) {
         window.alert(err.message)
     }
+    
  }
     return (
         <section id="login-page">
