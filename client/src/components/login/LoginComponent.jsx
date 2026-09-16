@@ -1,12 +1,14 @@
-import { useState } from "react"
+import useForm from "../../hooks/useForm"
 import { login } from "../../services/authService"
 import { useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 
 
 export default function LoginComponent() {
- const [email, setEmail] = useState('');
- const [password, setPassword] = useState('');
+const { values, register } = useForm({
+    email: '',
+    password: ''
+})
 
  const navigate = useNavigate()
  const { loginUser } = useAuth()
@@ -15,7 +17,7 @@ export default function LoginComponent() {
     e.preventDefault()
 
     try {
-        const result = await login(email, password)
+      const result = await login(values.email, values.password)
         loginUser(result)
         navigate('/')
         
@@ -31,18 +33,14 @@ export default function LoginComponent() {
                     <label htmlFor="email">Email</label>
                     <input type="email"
                      id="email"
-                     name="email"
-                     value={email}
-                     onChange={(e)=> setEmail(e.target.value)}
+                    {...register('email')}
                      placeholder="Your Email" />
                     <label htmlFor="login-pass">Password</label>
                     <input
                         type="password"
                         id="login-password"
-                        name="password"
+                        {...register('password')}
                         placeholder="Password"
-                        value={password}
-                        onChange={(e)=> setPassword(e.target.value)}
                     />
                     <input type="submit" className="btn submit" value="Login" />
                 </div>
