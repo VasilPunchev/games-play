@@ -2,16 +2,17 @@ import { useEffect, useState } from "react"
 import { useNavigate, useParams, Link } from "react-router-dom"
 import { getOne, deleteGame } from "../../services/gameService"
 import { getComments, addComment } from "../../services/commentService"
+import useAuth from "../../hooks/useAuth"
 
 
 export default function DetailsComponent() {
   const [game, setGame] = useState({})
   const { gameId } = useParams()
- 
+
   useEffect(() => {
-   if (!gameId) {
-    return;
-   }
+    if (!gameId) {
+      return;
+    }
 
     const controller = new AbortController()
     getOne(gameId, controller.signal)
@@ -34,28 +35,30 @@ export default function DetailsComponent() {
   useEffect(() => {
     const controller = new AbortController()
     getComments(gameId, controller.signal)
-    .then(result => {
-      setComments(result)
-    })
-    .catch(err => {
-      if (err.name !== 'AbortError') {
-        console.error(err)
-      }
-    })
+      .then(result => {
+        setComments(result)
+      })
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error(err)
+        }
+      })
     return () => {
       controller.abort()
     }
 
-  },[gameId])
+  }, [gameId])
 
   const navigate = useNavigate()
-  
+  const { user } = useAuth()
+  const isOwner = user?._id === game._ownerId
+
   async function deleteHandler() {
-    const token = localStorage.getItem('accessToken')
+    const token = user?.accessToken
     if (!token) {
-    console.error('No access token')
-    return
-     }
+      console.error('No access token')
+      return
+    }
     try {
       await deleteGame(gameId, token)
       navigate('/')
@@ -70,13 +73,13 @@ export default function DetailsComponent() {
       window.alert('Comment is required')
       return
     }
-    const token = localStorage.getItem('accessToken')
+    const token = user?.accessToken
     if (!token) {
       window.alert('You must be logged in')
       return
     }
     try {
-      await addComment(gameId, comment, token)
+      await addComment(gameId, comment, token, user.email)
       setComment('')
       const updatedComments = await getComments(gameId)
       setComments(updatedComments)
@@ -116,22 +119,22 @@ export default function DetailsComponent() {
             </p>
           </div>
         </div>
-        {/* Edit/Delete buttons ( Only for creator of this game )  */}
-        <div className="buttons">
+        {isOwner && (<div className="buttons">
           <Link to={`/games/${gameId}/edit`} className="button">
             Edit
           </Link>
           <button className="button" onClick={deleteHandler}>
             Delete
           </button>
-        </div>
+        </div>)}
+
         <div className="details-comments">
           <h2>Comments:</h2>
           {comments.length > 0 ? (
             <ul>
-              {comments.map(comment => ( 
-                <li className="comment" key={comment._id}> 
-                <p>Content: {comment.comment}</p>
+              {comments.map(comment => (
+                <li className="comment" key={comment._id}>
+                  <p>{comment.email}: {comment.comment}</p>
                 </li>
               ))}
             </ul>
@@ -139,19 +142,18 @@ export default function DetailsComponent() {
           )}
         </div>
       </div>
-      {/* Add Comment ( Only for logged-in users, which is not creators of the current game ) */}
-      <article className="create-comment">
+      {user && !isOwner && (<article className="create-comment">
         <label>Add new comment:</label>
         <form className="form" onSubmit={submitHandler}>
-          <textarea 
-          name="comment"
-           placeholder="Comment......" 
-           value={comment}
-           onChange={(e) => setComment(e.target.value) }
-            />
+          <textarea
+            name="comment"
+            placeholder="Comment......"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
           <input className="btn submit" type="submit" value="Add Comment" />
         </form>
-      </article>
+      </article>) }
     </section>
   )
 }

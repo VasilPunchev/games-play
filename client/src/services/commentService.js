@@ -12,7 +12,7 @@ export async function getComments(gameId, signal) {
     return result
 }
 
-export async function addComment(gameId, comment, token) {
+export async function addComment(gameId, comment, token, email) {
     const response = await fetch(baseUrl, {
         method: 'POST' ,
         headers: {
@@ -21,7 +21,8 @@ export async function addComment(gameId, comment, token) {
         } ,
         body: JSON.stringify({
             gameId ,
-            comment
+            comment,
+            email
         })
     })
     const result = await response.json()
