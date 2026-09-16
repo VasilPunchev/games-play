@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:3030/jsonstore/comments'
+const baseUrl = 'http://localhost:3030/data/comments'
 
 export async function getComments(gameId, signal) {
     const response = await fetch (
@@ -9,10 +9,7 @@ export async function getComments(gameId, signal) {
     if (!response.ok) {
         throw new Error(result.message)
     }
-    return Object.entries(result).map(([id, comment]) => ({
-        ...comment,
-        _id: id
-    }))
+    return result
 }
 
 export async function addComment(gameId, comment, token) {

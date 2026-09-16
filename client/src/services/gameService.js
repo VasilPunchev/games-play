@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:3030/jsonstore/games'
+const baseUrl = 'http://localhost:3030/data/games'
 export async function getAll(signal) {
     const response = await fetch(
         `${baseUrl}?sortBy=_createdOn%20desc`,
@@ -7,10 +7,7 @@ export async function getAll(signal) {
 
     const result = await response.json()
 
-    return Object.entries(result).map(([id, game]) => ({
-        ...game,
-        _id: id
-    }))
+    return result
 }
 export async function getOne(gameId, signal) {
     const response = await fetch(`${baseUrl}/${gameId}`, { signal })
@@ -25,6 +22,9 @@ export async function deleteGame(gameId, token) {
         }
     })
     const result = await response.json()
+    if (!response.ok) {
+        throw new Error(result.message)
+    }
     return result
 }
 
@@ -37,13 +37,12 @@ export async function addGame(gameData, token) {
         },  
         body: JSON.stringify(gameData)
     })
-    
+    const result = await response.json()
 
     if (!response.ok) {
-        const result = await response.json()
         throw new Error(result.message)
     }
-    return response;
+    return result;
 
 
 }
