@@ -3,12 +3,13 @@ import { Routes, Route } from 'react-router-dom'
 import FooterComponent from './components/footer/FooterComponent'
 import HeaderComponent from './components/header/HeaderComponent'
 import HomeComponent from './components/home/HomeComponent'
-import CatalogComponent from'./components/catalog/CatalogComponent'
+import CatalogComponent from './components/catalog/CatalogComponent'
 import DetailsComponent from './components/details/DetailsComponent'
 import LoginComponent from './components/login/LoginComponent'
 import RegisterComponent from './components/register/RegisterComponent'
 import CreateGameComponent from './components/creategame/CreateGameComponent'
 import EditComponent from './components/edit/EditComponent'
+import UserGuard from './components/guards/UserGuard'
 
 
 export default function App() {
@@ -16,22 +17,28 @@ export default function App() {
 
   return (
     <>
-       <HeaderComponent/>
+      <HeaderComponent />
 
-       <Routes>
-       <Route path='/' element = {<HomeComponent/>} />
-       <Route path='/catalog' element = {<CatalogComponent/>} />
-       <Route path='/login' element = {<LoginComponent/>} />
-       <Route path='/register' element = {<RegisterComponent/>} />
-       <Route path='/create' element = {<CreateGameComponent/>} />
+      <Routes>
+        <Route path='/' element={<HomeComponent />} />
+        <Route path='/catalog' element={<CatalogComponent />} />
+        <Route path='/login' element={<LoginComponent />} />
+        <Route path='/register' element={<RegisterComponent />} />
+
         <Route path='/games'>
-          <Route path=':gameId' element= {<DetailsComponent />} />
-          <Route path=':gameId/edit' element = {<EditComponent />} />
+          <Route path=':gameId' element={<DetailsComponent />} />
         </Route>
-       
-       </Routes>
-      
-       <FooterComponent/>
+
+        <Route element={<UserGuard />}>
+          <Route path='/create' element={<CreateGameComponent />} />
+
+          <Route path='/games'>
+            <Route path=':gameId/edit' element={<EditComponent />} />
+          </Route>
+        </Route>
+      </Routes>
+
+      <FooterComponent />
     </>
   )
 }

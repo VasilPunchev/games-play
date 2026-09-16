@@ -9,6 +9,7 @@ import useForm from "../../hooks/useForm"
 export default function DetailsComponent() {
   const [game, setGame] = useState({})
   const { gameId } = useParams()
+  const [comments, setComments] = useState([])
 
   useEffect(() => {
     if (!gameId) {
@@ -37,7 +38,7 @@ const { values, register, setValues } = useForm({
     const controller = new AbortController()
     getComments(gameId, controller.signal)
       .then(result => {
-      setValues(result)
+      setComments(result)
       })
       .catch(err => {
         if (err.name !== 'AbortError') {
@@ -83,7 +84,7 @@ const { values, register, setValues } = useForm({
       await addComment(gameId, values.comment, token, user.email)
       setValues({comment: ''})
       const updatedComments = await getComments(gameId)
-      setValues(updatedComments)
+      setComments(updatedComments)
     } catch (err) {
       window.alert(err.message)
     }
@@ -131,9 +132,9 @@ const { values, register, setValues } = useForm({
 
         <div className="details-comments">
           <h2>Comments:</h2>
-          {values.comments.length > 0 ? (
+          {comments.length > 0 ? (
             <ul>
-              {values.comments.map(comment => (
+              {comments.map(comment => (
                 <li className="comment" key={comment._id}>
                   <p>{comment.email}: {comment.comment}</p>
                 </li>
