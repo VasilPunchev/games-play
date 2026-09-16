@@ -10,6 +10,7 @@ import RegisterComponent from './components/register/RegisterComponent'
 import CreateGameComponent from './components/creategame/CreateGameComponent'
 import EditComponent from './components/edit/EditComponent'
 import UserGuard from './components/guards/UserGuard'
+import GuestGuard from './components/guards/GuestGuard'
 
 
 export default function App() {
@@ -22,9 +23,10 @@ export default function App() {
       <Routes>
         <Route path='/' element={<HomeComponent />} />
         <Route path='/catalog' element={<CatalogComponent />} />
+        <Route element={<GuestGuard/>}>
         <Route path='/login' element={<LoginComponent />} />
         <Route path='/register' element={<RegisterComponent />} />
-
+        </Route>
         <Route path='/games'>
           <Route path=':gameId' element={<DetailsComponent />} />
         </Route>
