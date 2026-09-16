@@ -6,7 +6,7 @@ import './styles/style.css'
 import AuthProvider from './contexts/AuthContext.jsx'
 
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root')).render (
   
   <BrowserRouter>
     <AuthProvider>

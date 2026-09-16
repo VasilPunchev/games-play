@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from "react";
-const AuthContext = createContext()
+import {  useState } from "react";
+import AuthContext from "./AuthContext";
 
 export default function AuthProvider({ children }) {
 const [user, setUser] = useState(()=> {
@@ -14,9 +14,15 @@ const [user, setUser] = useState(()=> {
         _id: userId
     }
 })
+
+ function loginUser(userData) {
+localStorage.setItem('accessToken', userData.accessToken)
+localStorage.setItem('userId', userData._id)
+setUser(userData)
+}
 const contextValue = {
     user,
-    setUser
+    loginUser
 }
 return ( 
 <AuthContext.Provider value={contextValue}>
@@ -24,6 +30,4 @@ return (
 </AuthContext.Provider>
 )
 }
-export  function useAuth() {
-    return useContext(AuthContext)
-}
+
