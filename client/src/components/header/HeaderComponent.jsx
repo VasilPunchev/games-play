@@ -1,9 +1,14 @@
 import { Link } from "react-router-dom"
-
+import useAuth from "../../hooks/useAuth"
 
 export default function HeaderComponent() {
+    const {user, logoutUser} = useAuth()
+    function logoutHandler() {
+        logoutUser()
+    }
+    
     return (
-
+        
 
         <header>
             <nav>
@@ -13,15 +18,19 @@ export default function HeaderComponent() {
                 </Link>
                 <Link to="/catalog">Catalog</Link>
 
-                <div id="user">
+               {user ? ( 
+                 <div id="user">
                     <Link to="/create">Add Game</Link>
-                    <a href="#">Logout</a>
-                </div>
+                    <button onClick={logoutHandler}>Logout</button>
+                </div>   
 
-                <div id="guest">
+               ) : (
+               <div id="guest">
                     <Link to="/login">Login</Link>
                     <Link to="/register">Register</Link>
-                </div>
+                </div> 
+                )}
+
             </nav>
         </header >
 
