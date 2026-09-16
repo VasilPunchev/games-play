@@ -1,23 +1,26 @@
 import { useState } from "react"
 import { login } from "../../services/authService"
 import { useNavigate } from "react-router-dom"
+import useAuth from "../../hooks/useAuth"
+
+
 export default function LoginComponent() {
  const [email, setEmail] = useState('');
  const [password, setPassword] = useState('');
 
  const navigate = useNavigate()
+ const { loginUser } = useAuth()
 
  async function submitHandler(e) {
     e.preventDefault()
 
     try {
         const result = await login(email, password)
-        localStorage.setItem('accessToken' , result.accessToken)
-        localStorage.setItem('userId', result._id)
+        loginUser(result)
         navigate('/')
         
     } catch (err) {
-        console.error(err.message)
+        window.alert(err.message)
     }
  }
     return (
