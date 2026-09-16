@@ -17,6 +17,7 @@ export default function useForm(initialValues) {
     }
     return {
         values,
-        register
+        register,
+        setValues
     }
 }

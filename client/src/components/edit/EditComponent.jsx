@@ -1,25 +1,32 @@
-import { useEffect, useState } from "react"
+import useForm from "../../hooks/useForm"
+import useAuth from "../../hooks/useAuth"
 import { getOne, editGame } from "../../services/gameService"
 import { useNavigate, useParams } from "react-router-dom"
+import { useEffect } from "react"
 
 export default function EditComponent() {
-  const { gameId } = useParams()
-  const [gameName, setGameName] = useState('')
-  const [genre, setGenre] = useState('')
-  const [activePlayers, setActivePlayers] = useState('')
-  const [releaseDate, setReleaseDate] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
-  const [summary, setSummary] = useState('')
+  const { values, register, setValues } = useForm({
+    gameName: '',
+    genre: '',
+    activePlayers: '',
+    releaseDate: '',
+    imageUrl: '',
+    summary: ''
+  })
+  const { user } = useAuth()
+  const {gameId} = useParams()
   useEffect(() => {
     const controller = new AbortController()
     getOne(gameId, controller.signal)
       .then(game => {
-        setGameName(game.title)
-        setActivePlayers(game.players)
-        setReleaseDate(game.date)
-        setImageUrl(game.imageUrl)
-        setSummary(game.summary)
-        setGenre(game.genre)
+        setValues({
+          gameName: game.title,
+          genre: game.genre,
+          activePlayers: game.players,
+          releaseDate: game.date,
+          imageUrl: game.imageUrl,
+          summary: game.summary
+        })
       })
       .catch(err => {
         if (err.name !== 'AbortError') {
@@ -30,43 +37,43 @@ export default function EditComponent() {
     return () => {
       controller.abort()
     }
-  }, [gameId])
+  }, [gameId,setValues])
   const navigate = useNavigate()
   async function submitHandler(e) {
     e.preventDefault()
-    if ( 
-      !gameName ||
-      !genre ||
-      !activePlayers ||
-      !releaseDate ||
-      !imageUrl ||
-      !summary
+    if (
+      !values.gameName ||
+      !values.genre ||
+      !values.activePlayers ||
+      !values.releaseDate ||
+      !values.imageUrl ||
+      !values.summary
     ) {
       window.alert('All fields are required')
       return
     }
-    const token = localStorage.getItem('accessToken')
+    const token = user?.accessToken
     if (!token) {
       window.alert('You must be logged in')
       return
     }
     const gameData = {
-      title: gameName ,
-      genre ,
-      players: Number(activePlayers) ,
-      date: releaseDate ,
-      imageUrl ,
-      summary
+      title: values.gameName,
+      genre: values.genre,
+      players: Number(values.activePlayers),
+      date: values.releaseDate,
+      imageUrl: values.imageUrl,
+      summary: values.summary
     }
-    try { 
+    try {
       await editGame(gameId, gameData, token)
       navigate(`/games/${gameId}`)
-      
+
     } catch (err) {
       window.alert(err.message)
     }
   }
-   
+
 
   return (
     <section id="edit-page">
@@ -78,10 +85,8 @@ export default function EditComponent() {
             <input
               type="text"
               id="gameName"
-              name="gameName"
-              value={gameName}
-              onChange={(e) => setGameName(e.target.value)}
               placeholder="Enter game title..."
+              {...register('gameName')}
             />
           </div>
           <div className="form-group-half">
@@ -89,10 +94,8 @@ export default function EditComponent() {
             <input
               type="text"
               id="genre"
-              name="genre"
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
               placeholder="Enter game genre..."
+              {...register('genre')}
             />
           </div>
           <div className="form-group-half">
@@ -100,11 +103,9 @@ export default function EditComponent() {
             <input
               type="number"
               id="activePlayers"
-              name="activePlayers"
-              value={activePlayers}
-              onChange={(e) => setActivePlayers(e.target.value)}
               min={0}
               placeholder={0}
+              {...register('activePlayers')}
             />
           </div>
           <div className="form-group-half">
@@ -112,9 +113,7 @@ export default function EditComponent() {
             <input
               type="date"
               id="releaseDate"
-              name="releaseDate"
-              value={releaseDate}
-              onChange={(e) => setReleaseDate(e.target.value)}
+             {...register('releaseDate')}
             />
           </div>
           <div className="form-group-full">
@@ -122,22 +121,17 @@ export default function EditComponent() {
             <input
               type="text"
               id="imageUrl"
-              name="imageUrl"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
               placeholder="Enter image URL..."
+              {...register('imageUrl')}
             />
           </div>
           <div className="form-group-full">
             <label htmlFor="summary">Summary:</label>
             <textarea
-              name="summary"
               id="summary"
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
               rows={5}
               placeholder="Write a brief summary..."
-
+              {...register('summary')}
             />
           </div>
           <input className="btn submit" type="submit" value="EDIT GAME" />
