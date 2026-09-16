@@ -56,6 +56,10 @@ const { values, register, setValues } = useForm({
   const isOwner = user?._id === game._ownerId
 
   async function deleteHandler() {
+    const confirmed = window.confirm('Are you sure you want to delete this game?')
+    if (!confirmed) {
+      return
+    }
     const token = user?.accessToken
     if (!token) {
       console.error('No access token')
