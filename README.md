@@ -1,55 +1,101 @@
+# I Love Games
 
-# Games Play
+I Love Games is a React single-page application for browsing, creating and managing games.
 
-Games Play is a React application for browsing and managing games.
+The project demonstrates authentication, protected routes, CRUD operations, owner-based permissions, comments, reusable custom hooks and REST API integration.
 
-## Technologies
+## Features
+
+- User registration, login and logout
+- Authentication with Context API
+- Persistent session with localStorage
+- Public game catalog and details pages
+- Create, edit and delete games
+- Owner-only Edit/Delete actions
+- Comments with author email
+- Protected routes with UserGuard
+- Guest-only routes with GuestGuard
+- Reusable `useForm` and `useAuth` hooks
+- Delete confirmation
+- REST API integration with SoftUni Practice Server
+
+## Tech Stack
 
 - React
 - Vite
 - React Router
-- Fetch API
+- JavaScript
+- HTML
+- CSS
+- Context API
+- REST API
 - SoftUni Practice Server
 
-## Implemented
+## Main Routes
 
-- Home page with the latest 3 games
-- Catalog with all games
-- Game Details page
-- Login
-- Register
-- Add Game
-- Delete Game
-- Nested Routes
-- AbortController
-- Authentication with access token
-- Form validation with `window.alert`
+```text
+/                       Home
+/catalog                Catalog
+/login                  Login
+/register               Register
+/create                 Create Game
+/games/:gameId          Game Details
+/games/:gameId/edit     Edit Game
+```
 
-## Routes
+## Authentication & Permissions
 
-- `/` - Home
-- `/catalog` - Catalog
-- `/games/:gameId` - Details
-- `/games/:gameId/edit` - Edit Game
-- `/login` - Login
-- `/register` - Register
-- `/create` - Add Game
+Authenticated users can create games and access protected routes.
 
-## Services
+Only the creator of a game can edit or delete it.
 
-### authService.js
+Logged-in users who are not the owner can leave comments.
 
-- login
-- register
+Guests can browse games and view details.
 
-### gameService.js
+## API
 
-- getAll
-- getOne
-- addGame
-- deleteGame
+```text
+POST   /users/register
+POST   /users/login
 
-## Remaining
+GET    /data/games
+GET    /data/games/:id
+POST   /data/games
+PUT    /data/games/:id
+DELETE /data/games/:id
 
-- Edit Game
-- Comments
+GET    /data/comments
+POST   /data/comments
+```
+
+## Run Locally
+
+Start the server:
+
+```bash
+cd server
+node server.js
+```
+
+Start the client:
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+## Project Focus
+
+This project was built to practice and demonstrate:
+
+- React component architecture
+- React Router
+- Authentication and Context API
+- Custom hooks
+- Controlled forms
+- CRUD operations
+- REST API communication
+- Route guards
+- Ownership-based permissions
