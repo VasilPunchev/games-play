@@ -1,33 +1,39 @@
-import { useState } from "react"
-import { register } from "../../services/authService"
+
+import { register as registerUser } from "../../services/authService"
 import { useNavigate } from "react-router-dom";
+import useForm from "../../hooks/useForm";
+import useAuth from "../../hooks/useAuth";
+
 
 export default function RegisterComponent() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const { values, register } = useForm ({ 
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
   
   const navigate = useNavigate()
+  const { loginUser } = useAuth()
 
   async function submitHandler(e) {
    e.preventDefault()
-   if (!password || !email || !confirmPassword) {
+   if (!values.password || !values.email || !values.confirmPassword) {
     window.alert('All fields are required')
     return;
    }
 
-  if (password !== confirmPassword) {
+  if (values.password !== values.confirmPassword) {
     window.alert("Passwords do not match")
     return;
   }  
   
   try {
-    const result = await register(email, password)
-    localStorage.setItem('accessToken', result.accessToken)
-    localStorage.setItem('userId', result._id)
-    navigate('/')
+    const result = await registerUser(values.email, values.password)
+    loginUser(result)
+     navigate('/')
     
-  } catch (err) {
+  }
+   catch (err) {
     window.alert(err.message)
   }
   }
@@ -42,25 +48,19 @@ export default function RegisterComponent() {
       <label htmlFor="email">Email:</label>
       <input type="email" 
       id="email"
-      name="email"
-      value={email}
-      onChange={(e)=> setEmail(e.target.value)}
+      {...register('email')}
       placeholder="Your Email" />
       <label htmlFor="register-password">Password:</label>
       <input
         type="password"
-        name="password"
-        value={password}
-        onChange={(e)=> setPassword(e.target.value)}
+       {...register('password')}
         id="register-password"
         placeholder="Password"
       />
       <label htmlFor="confirm-password">Confirm Password:</label>
       <input
         type="password"
-        name="confirm-password"
-        value={confirmPassword}
-        onChange={(e)=> setConfirmPassword(e.target.value)}
+       {...register('confirmPassword')}
         id="confirm-password"
         placeholder="Repeat Password"
       />
